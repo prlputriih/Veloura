@@ -91,7 +91,7 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Luaran",
         name: "Structured Jacket",
         desc: "Jaket yang berhenti tepat di atas pinggul membantu menciptakan struktur pada tubuh bagian atas.",
-        img: "/assets/images/regenerated_image_1778918485282.png"
+        img: "/assets/images/regenerated_image_1778995082058.png"
       }
     ]
   },
@@ -113,13 +113,13 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Empire Waist Tunic",
         desc: "Potongan di bawah dada memberikan ruang pada bagian perut dengan nyaman.",
-        img: "/assets/images/regenerated_image_1778918489436.png"
+        img: "/assets/images/regenerated_image_1778995086412.png"
       },
       {
         tag: "Bawahan",
         name: "Straight Leg Trousers",
         desc: "Menonjolkan kaki yang ramping tanpa membuat bagian tengah terlihat berat.",
-        img: "/assets/images/regenerated_image_1778918493151.png"
+        img: "/assets/images/regenerated_image_1778995089984.png"
       },
       {
         tag: "Luaran",
@@ -147,7 +147,7 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Peplum Top",
         desc: "Memberikan volume pada pinggul sehingga menciptakan ilusi pinggang kecil.",
-        img: "/assets/images/regenerated_image_1778918496473.png"
+        img: "/assets/images/regenerated_image_1778995093632.png"
       },
       {
         tag: "Bawahan",
@@ -305,7 +305,7 @@ export default function App() {
                         className="space-y-4 group"
                       >
                         <div className="aspect-[3/4] rounded-xl overflow-hidden shadow-sm relative">
-                          <img src={rec.img} alt={rec.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          <img src={rec.img} alt={rec.name} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           <div className="absolute top-4 left-4">
                             <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold tracking-widest uppercase rounded-full shadow-sm">
                               {rec.tag}
@@ -362,6 +362,7 @@ export default function App() {
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100" 
                   alt="Profile" 
                   className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
                 />
               </div>
             </div>
@@ -429,6 +430,7 @@ export default function App() {
                     src="/assets/images/regenerated_image_1778854561406.png" 
                     alt="Body Measurement Guide" 
                     className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-black/5"></div>
                   {/* Measurement overlays removed */}
@@ -605,6 +607,7 @@ export default function App() {
                     <img 
                       src={item.img} 
                       alt={item.name} 
+                      referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
