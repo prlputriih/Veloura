@@ -45,24 +45,24 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "V-Neck Blouse",
         desc: "Kerah V memanjangkan garis leher dan mengimbangi lebar bahu dengan elegan.",
-        img: "https://images.unsplash.com/photo-1551163949-3f6a71391acb?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778855504791.png"
       },
       {
         tag: "Bawahan",
         name: "Celana Kulot",
         desc: "Potongan high-waist mengikuti lekuk pinggul dan memberikan kesan kaki lebih jenjang.",
-        img: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778855509479.png"
       },
       {
         tag: "Luaran",
         name: "Tailored Blazer",
         desc: "Gunakan blazer yang terstruktur di pinggang untuk mempertahankan siluet jam pasir Anda.",
-        img: "https://images.unsplash.com/photo-1548624149-f9b1859aa700?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778855513111.png"
       }
     ]
   },
   pear: {
-    name: "Pir (Segitiga)",
+    name: "Pir",
     enName: "Pear Shape",
     icon: <Triangle size={64} className="text-brand-primary mb-4" strokeWidth={1.5} />,
     description: "Pinggul lebih lebar daripada bahu, menciptakan fokus visual pada bagian bawah tubuh.",
@@ -79,24 +79,24 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Ruffle Shoulder Top",
         desc: "Detail pada bahu memberikan volume untuk menyeimbangkan pinggul yang lebar.",
-        img: "https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918657196.png"
       },
       {
         tag: "Bawahan",
         name: "A-Line Skirt",
         desc: "Rok potongan A menyamarkan bagian pinggul dan memberikan siluet yang mengalir.",
-        img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918481712.png"
       },
       {
         tag: "Luaran",
         name: "Structured Jacket",
         desc: "Jaket yang berhenti tepat di atas pinggul membantu menciptakan struktur pada tubuh bagian atas.",
-        img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918485282.png"
       }
     ]
   },
   apple: {
-    name: "Apel (Bulat)",
+    name: "Apel",
     enName: "Apple Shape",
     icon: <Circle size={64} className="text-brand-primary mb-4" strokeWidth={1.5} />,
     description: "Bagian tengah tubuh (pinggang) cenderung lebih lebar dengan kaki yang biasanya ramping.",
@@ -113,13 +113,13 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Empire Waist Tunic",
         desc: "Potongan di bawah dada memberikan ruang pada bagian perut dengan nyaman.",
-        img: "https://images.unsplash.com/photo-1618355246738-4e8990b79366?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918489436.png"
       },
       {
         tag: "Bawahan",
         name: "Straight Leg Trousers",
         desc: "Menonjolkan kaki yang ramping tanpa membuat bagian tengah terlihat berat.",
-        img: "https://images.unsplash.com/photo-1509551381512-97669ba88825?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918493151.png"
       },
       {
         tag: "Luaran",
@@ -147,19 +147,19 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Peplum Top",
         desc: "Memberikan volume pada pinggul sehingga menciptakan ilusi pinggang kecil.",
-        img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918496473.png"
       },
       {
         tag: "Bawahan",
         name: "Paperbag Pants",
         desc: "Detail kerut di pinggang dengan sabuk sangat efektif menciptakan lekukan.",
-        img: "https://images.unsplash.com/photo-1584318320141-8f47513075b3?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918500627.png"
       },
       {
         tag: "Luaran",
         name: "Belted Trench Coat",
         desc: "Gunakan ikat pinggang untuk menegaskan struktur tubuh dan siluet yang lebih feminin.",
-        img: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918503801.png"
       }
     ]
   },
@@ -181,19 +181,19 @@ const SHAPE_DATA: Record<BodyShape, ShapeInfo> = {
         tag: "Atasan",
         name: "Halter Neck Top",
         desc: "Memecah garis bahu yang lebar dan menciptakan tampilan yang lebih ramping di atas.",
-        img: "https://images.unsplash.com/photo-1539106604051-9b0ca78f2441?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918507070.png"
       },
       {
         tag: "Bawahan",
         name: "Wide Leg Jeans",
         desc: "Volume ekstra di bawah mengimbangi lebarnya bahu secara instan.",
-        img: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918511172.png"
       },
       {
         tag: "Luaran",
         name: "Unstructured Cardigan",
         desc: "Potongan yang lemas menyamarkan garis bahu yang tajam tanpa menambah volume.",
-        img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800"
+        img: "/assets/images/regenerated_image_1778918514985.png"
       }
     ]
   }
@@ -207,6 +207,11 @@ export default function App() {
   });
   const [resultShape, setResultShape] = useState<BodyShape | null>(null);
   const [isCatalogView, setIsCatalogView] = useState(false);
+
+  const handleViewCatalog = () => {
+    setIsCatalogView(true);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
 
   const handleCalculate = () => {
     const s = parseFloat(measurements.shoulder);
@@ -262,7 +267,7 @@ export default function App() {
 
         <main className="max-w-7xl mx-auto px-4 py-20">
           <header className="text-center mb-24">
-            <span className="text-xs font-sans font-semibold tracking-[0.3em] text-brand-primary uppercase mb-6 block">The Atelier Catalog</span>
+            <span className="text-xs font-sans font-semibold tracking-[0.3em] text-brand-primary uppercase mb-6 block">the veloura catalog</span>
             <h1 className="text-4xl md:text-6xl font-serif mb-6">Panduan Gaya Semua Bentuk Tubuh</h1>
             <p className="max-w-2xl mx-auto text-brand-on-surface-variant leading-relaxed">
               Temukan karakter dan rekomendasi pakaian terbaik untuk setiap jenis siluet tubuh. Elegansi dimulai dari pemahaman diri.
@@ -399,7 +404,7 @@ export default function App() {
                 Mulai Analisis
               </a>
               <button 
-                onClick={() => setIsCatalogView(true)}
+                onClick={handleViewCatalog}
                 className="w-full sm:w-auto px-10 py-4 border border-brand-outline text-brand-on-surface font-medium rounded-lg hover:bg-brand-surface-container transition-all"
               >
                 Pelajari Lebih Lanjut
@@ -421,7 +426,7 @@ export default function App() {
               <div className="md:w-1/2 p-1 bg-brand-surface-container">
                 <div className="relative aspect-[3/4] rounded-xl overflow-hidden group">
                   <img 
-                    src="/src/assets/images/regenerated_image_1778766288261.jpg" 
+                    src="/assets/images/regenerated_image_1778854561406.png" 
                     alt="Body Measurement Guide" 
                     className="w-full h-full object-cover"
                   />
@@ -581,7 +586,7 @@ export default function App() {
                 <p className="text-brand-on-surface-variant">Pilihan kurasi untuk menonjolkan bentuk tubuh {currentData ? currentData.name : 'Anda'}.</p>
               </div>
               <button 
-                onClick={() => setIsCatalogView(true)}
+                onClick={handleViewCatalog}
                 className="hidden sm:flex items-center gap-2 text-sm font-bold tracking-wider uppercase text-brand-on-surface border-b border-brand-on-surface pb-1 group"
               >
                 Lihat Semua Katalog
@@ -614,7 +619,7 @@ export default function App() {
             </div>
             
             <button 
-              onClick={() => setIsCatalogView(true)}
+              onClick={handleViewCatalog}
               className="flex sm:hidden items-center justify-center gap-2 text-sm font-bold tracking-wider uppercase text-brand-on-surface border border-brand-outline-variant mt-10 py-4 rounded-lg w-full"
             >
               Lihat Semua Katalog
