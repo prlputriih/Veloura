@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Menu, Search, User, ChevronRight, Hourglass, Target, Lightbulb, Info, ArrowLeft, Triangle, Square, Circle } from 'lucide-react';
+import { Menu, Search, User, ChevronRight, Hourglass, Target, Lightbulb, Info, ArrowLeft, Triangle, Square, Circle, X, Home, BookOpen, LogIn, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 type BodyShape = 'hourglass' | 'pear' | 'apple' | 'rectangle' | 'inverted_triangle';
@@ -207,6 +207,23 @@ export default function App() {
   });
   const [resultShape, setResultShape] = useState<BodyShape | null>(null);
   const [isCatalogView, setIsCatalogView] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginForm, setLoginForm] = useState({ name: '', email: '' });
+  const [userName, setUserName] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginForm.name && loginForm.email) {
+      setUserName(loginForm.name);
+      setIsLoggedIn(true);
+      setShowLoginModal(false);
+      setLoginForm({ name: '', email: '' });
+    }
+  };
 
   const handleViewCatalog = () => {
     setIsCatalogView(true);
@@ -254,15 +271,72 @@ export default function App() {
     return (
       <div className="min-h-screen bg-brand-surface">
         <nav className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur-md border-b border-brand-outline-variant/30">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <button 
-              onClick={() => setIsCatalogView(false)}
-              className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-brand-primary transition-colors"
-            >
-              <ArrowLeft size={16} /> Kembali
-            </button>
-            <span className="text-xl font-serif tracking-widest font-semibold text-brand-on-surface">VELOURA</span>
-          </div>
+            <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center gap-4">
+              <div className="flex items-center gap-6 overflow-hidden">
+                <button 
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="p-2 -ml-2 hover:bg-brand-surface-container rounded-full transition-colors shrink-0"
+                >
+                  <Menu size={20} className="text-brand-on-surface" />
+                </button>
+                <button 
+                  onClick={() => setIsCatalogView(false)}
+                  className="hidden sm:flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-brand-primary transition-colors shrink-0"
+                >
+                  <ArrowLeft size={16} /> Kembali
+                </button>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {isSearchOpen ? (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="flex-grow max-w-xl mx-4 relative"
+                  >
+                    <input 
+                      autoFocus
+                      type="text"
+                      placeholder="Cari gaya, item, atau bentuk tubuh..."
+                      className="w-full h-10 bg-brand-surface-container border border-brand-outline-variant/30 rounded-full px-10 text-sm focus:outline-none focus:border-brand-primary transition-all"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-on-surface-variant" />
+                    <button 
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-brand-surface-container-high rounded-full transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.span 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-xl font-serif tracking-widest font-semibold text-brand-on-surface absolute left-1/2 -translate-x-1/2"
+                  >
+                    VELOURA
+                  </motion.span>
+                )}
+              </AnimatePresence>
+
+              <div className="flex items-center gap-2">
+                {!isSearchOpen && (
+                  <button 
+                    onClick={() => setIsSearchOpen(true)}
+                    className="p-2 hover:bg-brand-surface-container rounded-full transition-colors"
+                  >
+                    <Search size={20} />
+                  </button>
+                )}
+              </div>
+            </div>
         </nav>
 
         <main className="max-w-7xl mx-auto px-4 py-20">
@@ -275,51 +349,97 @@ export default function App() {
           </header>
           
           <div className="space-y-40">
-            {(Object.entries(SHAPE_DATA) as [BodyShape, ShapeInfo][]).map(([key, data]) => (
-              <section key={key} className="relative">
-                <div className="flex flex-col md:flex-row items-baseline gap-4 border-b border-brand-outline-variant/30 pb-10 mb-16">
-                  <h2 className="text-4xl md:text-5xl font-serif">{data.name}</h2>
-                  <span className="text-sm font-bold tracking-widest text-brand-on-surface-variant/40 uppercase font-sans">/ {data.enName}</span>
-                </div>
+            {(Object.entries(SHAPE_DATA) as [BodyShape, ShapeInfo][])
+              .filter(([_, data]) => {
+                if (!searchQuery) return true;
+                const query = searchQuery.toLowerCase();
+                return (
+                  data.name.toLowerCase().includes(query) ||
+                  data.enName.toLowerCase().includes(query) ||
+                  data.description.toLowerCase().includes(query) ||
+                  data.recommendations.some(r => r.name.toLowerCase().includes(query) || r.tag.toLowerCase().includes(query))
+                );
+              })
+              .map(([key, data]) => {
+                const filteredRecs = data.recommendations.filter(r => {
+                  if (!searchQuery) return true;
+                  const query = searchQuery.toLowerCase();
+                  return r.name.toLowerCase().includes(query) || r.tag.toLowerCase().includes(query);
+                });
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                  <div className="lg:col-span-1 space-y-6">
-                    <div className="w-16 h-16 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-primary">
-                      {React.cloneElement(data.icon as React.ReactElement, { size: 32 })}
-                    </div>
-                    <p className="text-lg leading-relaxed">{data.description}</p>
-                    <div className="bg-white p-6 rounded-xl border border-brand-outline-variant/20">
-                      <h4 className="text-xs font-bold tracking-widest uppercase mb-4 text-brand-primary">Kunci Penataan</h4>
-                      <p className="text-sm text-brand-on-surface-variant leading-loose">{data.focus}</p>
-                    </div>
-                  </div>
+                if (searchQuery && filteredRecs.length === 0 && !data.name.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
-                  <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    {data.recommendations.map((rec, i) => (
-                      <motion.div 
-                        key={i} 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        className="space-y-4 group"
-                      >
-                        <div className="aspect-[3/4] rounded-xl overflow-hidden shadow-sm relative">
-                          <img src={rec.img} alt={rec.name} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                          <div className="absolute top-4 left-4">
-                            <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold tracking-widest uppercase rounded-full shadow-sm">
-                              {rec.tag}
-                            </span>
-                          </div>
+                return (
+                  <section key={key} className="relative">
+                    <div className="flex flex-col md:flex-row items-baseline gap-4 border-b border-brand-outline-variant/30 pb-10 mb-16">
+                      <h2 className="text-4xl md:text-5xl font-serif">{data.name}</h2>
+                      <span className="text-sm font-bold tracking-widest text-brand-on-surface-variant/40 uppercase font-sans">/ {data.enName}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                      <div className="lg:col-span-1 space-y-6">
+                        <div className="w-16 h-16 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-primary">
+                          {React.cloneElement(data.icon as React.ReactElement, { size: 32 })}
                         </div>
-                        <h3 className="text-lg font-bold group-hover:text-brand-primary transition-colors">{rec.name}</h3>
-                        <p className="text-sm text-brand-on-surface-variant leading-relaxed italic">"{rec.desc}"</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            ))}
+                        <p className="text-lg leading-relaxed">{data.description}</p>
+                        <div className="bg-white p-6 rounded-xl border border-brand-outline-variant/20">
+                          <h4 className="text-xs font-bold tracking-widest uppercase mb-4 text-brand-primary">Kunci Penataan</h4>
+                          <p className="text-sm text-brand-on-surface-variant leading-loose">{data.focus}</p>
+                        </div>
+                      </div>
+
+                      <div className="lg:col-span-2 relative">
+                        {!isLoggedIn && (
+                          <div className="absolute inset-0 z-10 flex items-center justify-center bg-brand-surface/40 backdrop-blur-sm rounded-2xl">
+                            <div className="text-center p-8 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-brand-outline-variant/30 max-w-sm mx-4">
+                              <LogIn size={40} className="mx-auto mb-4 text-brand-primary" />
+                              <h4 className="text-xl font-serif mb-2">Akses Terbatas</h4>
+                              <p className="text-sm text-brand-on-surface-variant mb-6">Silakan login untuk melihat detail rekomendasi gaya lengkap.</p>
+                              <button 
+                                onClick={() => setShowLoginModal(true)}
+                                className="w-full py-3 bg-brand-primary text-white text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-opacity-90 transition-all"
+                              >
+                                Login Sekarang
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 ${!isLoggedIn ? 'blur-md pointer-events-none select-none' : ''}`}>
+                          {filteredRecs.map((rec, i) => (
+                            <motion.div 
+                              key={i} 
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: i * 0.1 }}
+                              className="space-y-4 group"
+                            >
+                              <div className="aspect-[3/4] rounded-xl overflow-hidden shadow-sm relative">
+                                <img src={rec.img} alt={rec.name} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                <div className="absolute top-4 left-4">
+                                  <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold tracking-widest uppercase rounded-full shadow-sm">
+                                    {rec.tag}
+                                  </span>
+                                </div>
+                              </div>
+                              <h3 className="text-lg font-bold group-hover:text-brand-primary transition-colors">{rec.name}</h3>
+                              <p className="text-sm text-brand-on-surface-variant leading-relaxed italic">"{rec.desc}"</p>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                );
+              })}
+            {searchQuery && (Object.entries(SHAPE_DATA) as [BodyShape, ShapeInfo][]).filter(([_, data]) => {
+              const query = searchQuery.toLowerCase();
+              return data.name.toLowerCase().includes(query) || data.enName.toLowerCase().includes(query) || data.description.toLowerCase().includes(query) || data.recommendations.some(r => r.name.toLowerCase().includes(query));
+            }).length === 0 && (
+              <div className="text-center py-20">
+                <p className="text-brand-on-surface-variant">Tidak ada hasil ditemukan untuk "{searchQuery}"</p>
+              </div>
+            )}
           </div>
         </main>
 
@@ -328,6 +448,110 @@ export default function App() {
             © 2026 VELOURA ATELIER. Elevating Personal Elegance.
           </p>
         </footer>
+
+        {/* Sidebar for Catalog View */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSidebarOpen(false)}
+                className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+              />
+              <motion.aside
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed top-0 left-0 bottom-0 w-80 z-[70] bg-brand-surface shadow-2xl flex flex-col"
+              >
+                <div className="p-6 flex justify-between items-center border-b border-brand-outline-variant/20">
+                  <span className="text-xl font-serif tracking-widest font-semibold text-brand-on-surface">VELOURA</span>
+                  <button 
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="p-2 hover:bg-brand-surface-container rounded-full transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <nav className="flex-grow py-8 px-6 space-y-6">
+                  <button 
+                    onClick={() => {
+                      setIsCatalogView(false);
+                      setIsSidebarOpen(false);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="flex items-center gap-4 w-full text-left p-4 rounded-xl hover:bg-brand-surface-container transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-on-surface-variant group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
+                      <Home size={20} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-brand-on-surface">Home</p>
+                      <p className="text-xs text-brand-on-surface-variant">Discover our world</p>
+                    </div>
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setIsCatalogView(true);
+                      setIsSidebarOpen(false);
+                      window.scrollTo({ top: 0, behavior: 'instant' });
+                    }}
+                    className="flex items-center gap-4 w-full text-left p-4 rounded-xl hover:bg-brand-surface-container transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-on-surface-variant group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
+                      <BookOpen size={20} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-brand-on-surface">Katalog</p>
+                      <p className="text-xs text-brand-on-surface-variant">View all styles</p>
+                    </div>
+                  </button>
+                </nav>
+
+                <div className="p-8 border-t border-brand-outline-variant/20">
+                  {isLoggedIn ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 p-4 bg-brand-surface-container rounded-xl border border-brand-outline-variant/20">
+                        <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary font-bold">
+                          {userName.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-brand-on-surface">{userName}</p>
+                          <p className="text-[10px] text-brand-on-surface-variant uppercase tracking-wider">Member</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          setIsLoggedIn(false);
+                          setUserName('');
+                          setIsSidebarOpen(false);
+                        }}
+                        className="flex items-center justify-center gap-2 w-full py-4 text-brand-on-surface-variant font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors"
+                      >
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => {
+                        setIsSidebarOpen(false);
+                        setShowLoginModal(true);
+                      }}
+                      className="flex items-center justify-center gap-2 w-full py-4 bg-brand-primary text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-brand-primary/20"
+                    >
+                      <LogIn size={18} /> Login
+                    </button>
+                  )}
+                </div>
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
@@ -339,32 +563,90 @@ export default function App() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur-md border-b border-brand-outline-variant/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-6">
-              <button className="p-2 -ml-2 hover:bg-brand-surface-container rounded-full transition-colors">
+          <div className="flex justify-between items-center h-16 gap-4">
+            <div className="flex items-center gap-6 overflow-hidden">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 -ml-2 hover:bg-brand-surface-container rounded-full transition-colors shrink-0"
+              >
                 <Menu size={20} className="text-brand-on-surface" />
               </button>
-              <span className="text-2xl font-serif tracking-widest font-semibold text-brand-on-surface">VELOURA</span>
+              <AnimatePresence mode="wait">
+                {!isSearchOpen && (
+                  <motion.span 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="text-2xl font-serif tracking-widest font-semibold text-brand-on-surface shrink-0"
+                  >
+                    VELOURA
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
             
-            <div className="hidden md:flex items-center space-x-12">
-              <a href="#" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">DISCOVER</a>
-              <a href="#analyze-section" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">ANALYZE</a>
-              <a href="#outfit-section" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">STYLE</a>
-            </div>
+            <AnimatePresence mode="wait">
+              {!isSearchOpen ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="hidden md:flex items-center space-x-12"
+                >
+                  <a href="#" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">DISCOVER</a>
+                  <a href="#analyze-section" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">ANALYZE</a>
+                  <a href="#outfit-section" className="text-sm font-medium tracking-wider hover:text-brand-primary transition-colors">STYLE</a>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  className="flex-grow max-w-2xl mx-4 relative"
+                >
+                  <input 
+                    autoFocus
+                    type="text"
+                    placeholder="Cari gaya atau item pakaian..."
+                    className="w-full h-10 bg-brand-surface-container border border-brand-outline-variant/30 rounded-full px-10 text-sm focus:outline-none focus:border-brand-primary transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-on-surface-variant" />
+                  <button 
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchQuery('');
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-brand-surface-container-high rounded-full transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-brand-surface-container rounded-full transition-colors">
-                <Search size={20} />
+              {!isSearchOpen && (
+                <button 
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2 hover:bg-brand-surface-container rounded-full transition-colors"
+                >
+                  <Search size={20} />
+                </button>
+              )}
+              <button 
+                onClick={() => isLoggedIn ? setIsSidebarOpen(true) : setShowLoginModal(true)}
+                className="w-8 h-8 rounded-full bg-brand-surface-container border border-brand-outline-variant flex items-center justify-center overflow-hidden hover:border-brand-primary transition-colors shrink-0"
+              >
+                {isLoggedIn ? (
+                  <div className="w-full h-full bg-brand-primary/10 flex items-center justify-center text-brand-primary text-xs font-bold">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <User size={18} className="text-brand-on-surface-variant" />
+                )}
               </button>
-              <div className="w-8 h-8 rounded-full bg-brand-surface-container border border-brand-outline-variant flex items-center justify-center overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100" 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -596,29 +878,65 @@ export default function App() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {(currentData || SHAPE_DATA.hourglass).recommendations.map((item, i) => (
-                <motion.div 
-                  key={i}
-                  whileHover={{ y: -8 }}
-                  className="group cursor-pointer"
-                >
-                  <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-6 relative shadow-lg shadow-brand-on-surface/5">
-                    <img 
-                      src={item.img} 
-                      alt={item.name} 
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                    <span className="absolute bottom-6 left-6 px-4 py-1 bg-white/90 backdrop-blur text-[10px] font-bold tracking-widest uppercase rounded-full">
-                      {item.tag}
-                    </span>
+            <div className="relative">
+              {!isLoggedIn && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-brand-surface/20 backdrop-blur-sm rounded-3xl">
+                  <div className="text-center p-12 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-brand-outline-variant/30 max-w-md mx-4">
+                    <div className="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <LogIn size={40} className="text-brand-primary" />
+                    </div>
+                    <h4 className="text-2xl font-serif mb-3 text-brand-on-surface">Eksklusif untuk Member</h4>
+                    <p className="text-brand-on-surface-variant mb-8 leading-relaxed">
+                      Dapatkan akses penuh ke rekomendasi pakaian yang disesuaikan khusus untuk bentuk tubuh Anda dengan masuk ke akun Veloura Anda.
+                    </p>
+                    <button 
+                      onClick={() => setShowLoginModal(true)}
+                      className="w-full py-4 bg-brand-primary text-white font-bold tracking-[0.2em] uppercase rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-brand-primary/20"
+                    >
+                      Login Untuk Melihat
+                    </button>
+                    <p className="mt-6 text-[10px] text-brand-on-surface-variant uppercase tracking-widest opacity-60">Gratis dan Cepat • Veloura Atelier</p>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-brand-primary transition-colors">{item.name}</h3>
-                  <p className="text-sm text-brand-on-surface-variant leading-relaxed font-italic italic">"{item.desc}"</p>
-                </motion.div>
-              ))}
+                </div>
+              )}
+              <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 ${!isLoggedIn ? 'blur-xl pointer-events-none select-none' : ''}`}>
+                {(currentData || SHAPE_DATA.hourglass).recommendations
+                  .filter(item => {
+                    if (!searchQuery) return true;
+                    const query = searchQuery.toLowerCase();
+                    return item.name.toLowerCase().includes(query) || item.tag.toLowerCase().includes(query);
+                  })
+                  .map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      whileHover={{ y: -8 }}
+                      className="group cursor-pointer"
+                    >
+                      <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-6 relative shadow-lg shadow-brand-on-surface/5">
+                        <img 
+                          src={item.img} 
+                          alt={item.name} 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        <span className="absolute bottom-6 left-6 px-4 py-1 bg-white/90 backdrop-blur text-[10px] font-bold tracking-widest uppercase rounded-full">
+                          {item.tag}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-brand-primary transition-colors">{item.name}</h3>
+                      <p className="text-sm text-brand-on-surface-variant leading-relaxed font-italic italic">"{item.desc}"</p>
+                    </motion.div>
+                  ))}
+              </div>
+              {searchQuery && (currentData || SHAPE_DATA.hourglass).recommendations.filter(item => {
+                const query = searchQuery.toLowerCase();
+                return item.name.toLowerCase().includes(query) || item.tag.toLowerCase().includes(query);
+              }).length === 0 && (
+                <div className="text-center py-20">
+                  <p className="text-brand-on-surface-variant">Tidak ada rekomendasi outfit ditemukan untuk "{searchQuery}"</p>
+                </div>
+              )}
             </div>
             
             <button 
@@ -662,6 +980,183 @@ export default function App() {
           © 2026 VELOURA ATELIER. Elevating Personal Elegance.
         </p>
       </footer>
+
+      {/* Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+            />
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 bottom-0 w-80 z-[70] bg-brand-surface shadow-2xl flex flex-col"
+            >
+              <div className="p-6 flex justify-between items-center border-b border-brand-outline-variant/20">
+                <span className="text-xl font-serif tracking-widest font-semibold text-brand-on-surface">VELOURA</span>
+                <button 
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="p-2 hover:bg-brand-surface-container rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <nav className="flex-grow py-8 px-6 space-y-6">
+                <button 
+                  onClick={() => {
+                    setIsCatalogView(false);
+                    setIsSidebarOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="flex items-center gap-4 w-full text-left p-4 rounded-xl hover:bg-brand-surface-container transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-on-surface-variant group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
+                    <Home size={20} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-brand-on-surface">Home</p>
+                    <p className="text-xs text-brand-on-surface-variant">Discover our world</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => {
+                    setIsCatalogView(true);
+                    setIsSidebarOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                  }}
+                  className="flex items-center gap-4 w-full text-left p-4 rounded-xl hover:bg-brand-surface-container transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-brand-surface-container flex items-center justify-center text-brand-on-surface-variant group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
+                    <BookOpen size={20} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-brand-on-surface">Katalog</p>
+                    <p className="text-xs text-brand-on-surface-variant">View all styles</p>
+                  </div>
+                </button>
+              </nav>
+
+              <div className="p-8 border-t border-brand-outline-variant/20">
+                {isLoggedIn ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-4 bg-brand-surface-container rounded-xl border border-brand-outline-variant/20">
+                      <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary font-bold">
+                        {userName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-brand-on-surface">{userName}</p>
+                        <p className="text-[10px] text-brand-on-surface-variant uppercase tracking-wider">Member</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        setIsLoggedIn(false);
+                        setUserName('');
+                        setIsSidebarOpen(false);
+                      }}
+                      className="flex items-center justify-center gap-2 w-full py-4 text-brand-on-surface-variant font-bold text-xs uppercase tracking-widest hover:text-red-500 transition-colors"
+                    >
+                      <LogOut size={16} /> Logout
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      setShowLoginModal(true);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-brand-primary text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-brand-primary/20"
+                  >
+                    <LogIn size={18} /> Login
+                  </button>
+                )}
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Login Modal */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLoginModal(false)}
+              className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-md"
+            />
+            <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 pointer-events-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-brand-surface w-full max-w-md rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
+              >
+                <div className="p-8">
+                  <div className="flex justify-between items-center mb-8">
+                    <div>
+                      <h2 className="text-2xl font-serif text-brand-on-surface">Welcome Back</h2>
+                      <p className="text-sm text-brand-on-surface-variant">Sign in to your Veloura account</p>
+                    </div>
+                    <button 
+                      onClick={() => setShowLoginModal(false)}
+                      className="p-2 hover:bg-brand-surface-container rounded-full transition-colors"
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold tracking-widest text-brand-on-surface uppercase">Nama Lengkap</label>
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="Masukkan nama Anda"
+                        className="w-full h-14 bg-brand-surface-container border border-brand-outline-variant/30 rounded-xl px-4 focus:outline-none focus:border-brand-primary transition-colors"
+                        value={loginForm.name}
+                        onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold tracking-widest text-brand-on-surface uppercase">Email</label>
+                      <input 
+                        required
+                        type="email" 
+                        placeholder="contoh@email.com"
+                        className="w-full h-14 bg-brand-surface-container border border-brand-outline-variant/30 rounded-xl px-4 focus:outline-none focus:border-brand-primary transition-colors"
+                        value={loginForm.email}
+                        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      className="w-full py-4 bg-brand-primary text-white font-bold rounded-xl tracking-widest uppercase hover:bg-opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-brand-primary/20"
+                    >
+                      Sign In
+                    </button>
+                  </form>
+
+                  <p className="mt-8 text-center text-[10px] text-brand-on-surface-variant leading-relaxed uppercase tracking-widest opacity-60">
+                    By signing in, you agree to Veloura Atelier's <br /> Terms of Service and Privacy Policy.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
