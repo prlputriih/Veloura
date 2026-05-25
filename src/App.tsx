@@ -445,7 +445,7 @@ export default function App() {
 
         <footer className="py-20 bg-brand-surface-container text-center mt-40">
           <p className="text-sm font-bold tracking-widest uppercase text-brand-on-surface-variant opacity-60">
-            © 2026 VELOURA ATELIER. Elevating Personal Elegance.
+            © 2026 VELOURA. Elevating Personal Elegance.
           </p>
         </footer>
 
@@ -895,7 +895,7 @@ export default function App() {
                     >
                       Login Untuk Melihat
                     </button>
-                    <p className="mt-6 text-[10px] text-brand-on-surface-variant uppercase tracking-widest opacity-60">Gratis dan Cepat • Veloura Atelier</p>
+                    <p className="mt-6 text-[10px] text-brand-on-surface-variant uppercase tracking-widest opacity-60">GRATIS DAN CEPAT . VELOURA</p>
                   </div>
                 </div>
               )}
@@ -977,7 +977,7 @@ export default function App() {
       {/* Footer */}
       <footer className="py-12 bg-brand-surface-container border-t border-brand-outline-variant/30 text-center">
         <p className="text-sm font-bold tracking-widest uppercase text-brand-on-surface-variant opacity-60">
-          © 2026 VELOURA ATELIER. Elevating Personal Elegance.
+          © 2026 VELOURA. Elevating Personal Elegance.
         </p>
       </footer>
 
@@ -1149,7 +1149,7 @@ export default function App() {
                   </form>
 
                   <p className="mt-8 text-center text-[10px] text-brand-on-surface-variant leading-relaxed uppercase tracking-widest opacity-60">
-                    By signing in, you agree to Veloura Atelier's <br /> Terms of Service and Privacy Policy.
+                    By signing in, you agree to Veloura's <br /> Terms of Service and Privacy Policy.
                   </p>
                 </div>
               </motion.div>
