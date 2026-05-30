@@ -1106,7 +1106,7 @@ export default function App() {
                 <div className="p-8">
                   <div className="flex justify-between items-center mb-8">
                     <div>
-                      <h2 className="text-2xl font-serif text-brand-on-surface">Welcome Back</h2>
+                      <h2 className="text-2xl font-serif text-brand-on-surface">Welcome</h2>
                       <p className="text-sm text-brand-on-surface-variant">Sign in to your Veloura account</p>
                     </div>
                     <button 
